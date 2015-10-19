@@ -83,6 +83,10 @@ var update = function (modifier) {
 
 // Draw everything
 var render = function () {
+	context.rect(0 ,0 , canvas.width, canvas.height);
+	context.fillStyle = "black";
+	context.fill();
+
 	if (boxReady) {
 		context.drawImage(boxImage, box.x, box.y, 40, 40);
 	}
