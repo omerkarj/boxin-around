@@ -7,7 +7,20 @@ document.body.appendChild(canvas);
 var centerX = canvas.width / 2;
 var centerY = canvas.height / 2;
 
+// Box image
+var boxReady = false;
+var boxImage = new Image();
+boxImage.onload = function(){
+	boxReady = true;
+};
+boxImage.src = "images/box.png";
+
 // Game objects
+var box = {
+	speed: 256,
+	x: 350,
+	y: 50
+};
 var hero = {
 	speed: 256, // movement in pixels per second
 	x: 0,
@@ -52,7 +65,16 @@ var reset = function () {
 
 // Update game objects
 var update = function (modifier) {
+	render();
 	rotateCircles();
+
+	if (32 in keysDown) { // Player holding space
+		box.y += box.speed * modifier;
+	}
+	if (40 in keysDown) { // Player holding down
+		box.y -= box.speed * modifier;
+	}
+
 	// Are they touching?
 	if (false) {
 		reset();
@@ -61,7 +83,15 @@ var update = function (modifier) {
 
 // Draw everything
 var render = function () {
-	
+	if (boxReady) {
+		context.drawImage(boxImage, box.x, box.y, 40, 40);
+	}
+
+	// Score
+	context.fillStyle = "rgb(250, 250, 250)";
+	context.font = "24px Helvetica";
+	context.textAlign = "left";
+	context.textBaseline = "top";
 };
 
 // The main game loop
@@ -70,7 +100,6 @@ var main = function () {
 	var delta = now - then;
 
 	update(delta / 1000);
-	render();
 
 	then = now;
 

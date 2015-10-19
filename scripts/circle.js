@@ -14,7 +14,7 @@ Circle.prototype.draw = function () {
       var x = window.centerX;
       var y = window.centerY;
       this.startAngle = convertToRadians(this.angle);
-      this.endAngle = startAngle + convertToRadians(12 * this.speed);
+      this.endAngle = this.startAngle + convertToRadians(12 * this.speed);
 
       // clear last iteration
       context.beginPath();
@@ -36,7 +36,7 @@ Circle.prototype.draw = function () {
 
       // create the opening in the arc
       context.beginPath();
-      context.arc(x, y, this.radius, startAngle, endAngle, false);
+      context.arc(x, y, this.radius, this.startAngle, this.endAngle, false);
       context.fillStyle = 'transparent';
       context.fill();
       context.lineWidth = 6;
