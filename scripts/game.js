@@ -1,8 +1,8 @@
 // Create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 512;
-canvas.height = 480;
+canvas.width = 700;
+canvas.height = 700;
 document.body.appendChild(canvas);
 
 // Background image
@@ -13,7 +13,20 @@ bgImage.onload = function () {
 };
 bgImage.src = "images/background.png";
 
+// Box image
+var boxReady = false;
+var boxImage = new Image();
+boxImage.onload = function(){
+	boxReady = true;
+};
+boxImage.src = "images/box.png";
+
 // Game objects
+var box = {
+	speed: 256,
+	x: 350,
+	y: 50
+};
 var hero = {
 	speed: 256, // movement in pixels per second
 	x: 0,
@@ -48,18 +61,18 @@ var reset = function () {
 
 // Update game objects
 var update = function (modifier) {
-	if (38 in keysDown) { // Player holding up
-		hero.y -= hero.speed * modifier;
+	if (32 in keysDown) { // Player holding space
+		box.y += box.speed * modifier;
 	}
 	if (40 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
+		box.y -= box.speed * modifier;
 	}
-	if (37 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
-	}
-	if (39 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
-	}
+	//if (37 in keysDown) { // Player holding left
+	//	box.x -= box.speed * modifier;
+	//}
+	//if (39 in keysDown) { // Player holding right
+	//	box.x += box.speed * modifier;
+	//}
 
 	// Are they touching?
 	if (
@@ -76,23 +89,20 @@ var update = function (modifier) {
 // Draw everything
 var render = function () {
 	if (bgReady) {
-		ctx.drawImage(bgImage, 0, 0);
+		ctx.drawImage(bgImage, 0, 0, 700, 700);
 	}
 
-	if (heroReady) {
-		ctx.drawImage(heroImage, hero.x, hero.y);
+	if (boxReady) {
+		ctx.drawImage(boxImage, box.x, box.y, 40, 40);
 	}
 
-	if (monsterReady) {
-		ctx.drawImage(monsterImage, monster.x, monster.y);
-	}
 
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Monsterrs caught: " + monstersCaught, 32, 32);
+
 };
 
 // The main game loop
