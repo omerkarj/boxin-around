@@ -1,17 +1,11 @@
 // Create the canvas
 var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
-canvas.width = 700;
-canvas.height = 700;
+var context = canvas.getContext("2d");
+canvas.width = 900;
+canvas.height = 900;
 document.body.appendChild(canvas);
-
-// Background image
-var bgReady = false;
-var bgImage = new Image();
-bgImage.onload = function () {
-	bgReady = true;
-};
-bgImage.src = "images/background.png";
+var centerX = canvas.width / 2;
+var centerY = canvas.height / 2;
 
 // Box image
 var boxReady = false;
@@ -32,11 +26,25 @@ var hero = {
 	x: 0,
 	y: 0
 };
-var monster = {
-	x: 0,
-	y: 0
-};
-var monstersCaught = 0;
+
+var createCircles = function () {
+	window.circles = [];
+	for (var i = 0; i < 4; i++) {
+		var radius = 80 + i * 80;
+		var speed = 5 -  i;
+
+		window.circles.push(new Circle(radius, speed, i % 2 == 0 ? 1 : -1));	
+		window.circles[i].draw();
+		console.log("circle " + i + "drawn!");
+	}
+}
+var rotateCircles = function () {
+	window.circles.forEach( function (circle) {
+		circle.rotate();
+	});
+}
+
+
 
 // Handle keyboard controls
 var keysDown = {};
@@ -51,58 +59,39 @@ addEventListener("keyup", function (e) {
 
 // Reset the game when the player catches a monster
 var reset = function () {
-	hero.x = canvas.width / 2;
-	hero.y = canvas.height / 2;
-
-	// Throw the monster somewhere on the screen randomly
-	monster.x = 32 + (Math.random() * (canvas.width - 64));
-	monster.y = 32 + (Math.random() * (canvas.height - 64));
+	window.circles = null;
+	createCircles();
 };
 
 // Update game objects
 var update = function (modifier) {
+	render();
+	rotateCircles();
+
 	if (32 in keysDown) { // Player holding space
 		box.y += box.speed * modifier;
 	}
 	if (40 in keysDown) { // Player holding down
 		box.y -= box.speed * modifier;
 	}
-	//if (37 in keysDown) { // Player holding left
-	//	box.x -= box.speed * modifier;
-	//}
-	//if (39 in keysDown) { // Player holding right
-	//	box.x += box.speed * modifier;
-	//}
 
 	// Are they touching?
-	if (
-		hero.x <= (monster.x + 32)
-		&& monster.x <= (hero.x + 32)
-		&& hero.y <= (monster.y + 32)
-		&& monster.y <= (hero.y + 32)
-	) {
-		++monstersCaught;
+	if (false) {
 		reset();
 	}
 };
 
 // Draw everything
 var render = function () {
-	if (bgReady) {
-		ctx.drawImage(bgImage, 0, 0, 700, 700);
-	}
-
 	if (boxReady) {
-		ctx.drawImage(boxImage, box.x, box.y, 40, 40);
+		context.drawImage(boxImage, box.x, box.y, 40, 40);
 	}
-
 
 	// Score
-	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "24px Helvetica";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-
+	context.fillStyle = "rgb(250, 250, 250)";
+	context.font = "24px Helvetica";
+	context.textAlign = "left";
+	context.textBaseline = "top";
 };
 
 // The main game loop
@@ -111,7 +100,6 @@ var main = function () {
 	var delta = now - then;
 
 	update(delta / 1000);
-	render();
 
 	then = now;
 
